@@ -1,5 +1,5 @@
 dependencies: \
-  /Users/william/Projects/Coin\ Detector/Coin\ Detector/main.cpp \
+  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/main.cpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/opencv.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/opencv_modules.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/core.hpp \
