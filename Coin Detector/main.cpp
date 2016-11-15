@@ -13,6 +13,12 @@
 using namespace std;
 using namespace cv;
 
+bool sequential_labeling(Mat &img) {
+    
+    // TODO Implement sequential labeling algorithm
+    return true;
+}
+
 int main(int argc, char** argv ) {
     
     if ( argc != 2 )
@@ -34,14 +40,16 @@ int main(int argc, char** argv ) {
     //convert the image to grayscale
     Mat gray_image;
     cvtColor(orig_image, gray_image, CV_BGR2GRAY);
-
+    //blur the image to remove high frequencies and noise from dust particles
+    GaussianBlur(gray_image, gray_image, Size(7, 7), 0);
+    
     //threshold the image to convert it to binary
     Mat binary_image;
-    binary_image = gray_image > 100;
+    binary_image = gray_image > 50; //threshold is 50
     String window_name = "Display Image";
 
-    imshow(window_name, gray_image);
-    namedWindow(window_name, WINDOW_NORMAL );
+    imshow(window_name, binary_image);
+    namedWindow(window_name, WINDOW_NORMAL);
     
     waitKey(0);
     
