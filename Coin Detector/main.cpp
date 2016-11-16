@@ -15,7 +15,9 @@
 using namespace std;
 using namespace cv;
 
-int main(int argc, char** argv ) {
+void setCoinProperties(vector<Coin> coinVector, Mat labeledImage);
+
+int main(int argc, char** argv) {
     if (argc != 2) {
         printf("usage: DisplayImage.out <Image_Path>\n");
         return -1;
@@ -29,7 +31,20 @@ int main(int argc, char** argv ) {
         printf("No image data \n");
         return -1;
     }
-    
-    GrayscaleAndLabelImage(orig_image);
-    return 0;
+   
+	//Assign labels to coins on a binary image
+    Mat labeledImage = GrayscaleAndLabelImage(orig_image);
+
+	vector<Coin> coinVector;
+	setCoinProperties(coinVector, labeledImage);
+	return 0;
+}
+
+void setCoinProperties(vector<Coin> coinVector, Mat labeledImage) {
+	/*for(int i = 0; i < labeledImage.rows; i++) {
+        int * p = labeledImage.ptr<int>(i);
+        for(int j = 0; j < labeledImage.cols * labeledImage.channels() ; j++) {
+            cout << p[j] << endl;
+        }
+	}*/
 }

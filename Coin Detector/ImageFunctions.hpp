@@ -16,6 +16,6 @@
 using namespace cv;
 using namespace std;
 
-void GrayscaleAndLabelImage(Mat orig_image);
+Mat GrayscaleAndLabelImage(Mat originalImage);
 
 #endif /* ImageFunctions_hpp */

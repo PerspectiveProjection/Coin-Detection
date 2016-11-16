@@ -8,12 +8,12 @@
 
 #include "ImageFunctions.hpp"
 #include <opencv2/opencv.hpp>
-#include "Coin.cpp"
+#include "Coin.hpp"
 
-using namespace cv;
 using namespace std;
+using namespace cv;
 
-void GrayscaleAndLabelImage(Mat orig_image) {
+Mat GrayscaleAndLabelImage(Mat orig_image) {
 	//convert the image to grayscale
     Mat gray_image;
     cvtColor(orig_image, gray_image, CV_BGR2GRAY);
@@ -26,13 +26,22 @@ void GrayscaleAndLabelImage(Mat orig_image) {
     
     //perform sequential labeling (connected components algorithm) to segment the coins
     Mat labeled_image;
-    connectedComponents(binary_image, labeled_image, 8, CV_16U);
+    Mat stats, centroids;
+    connectedComponentsWithStats(binary_image, labeled_image, stats, centroids, 8, CV_16U);
+    
     //normalize the labels for better visibility
     normalize(labeled_image, labeled_image, 0, 255, NORM_MINMAX, CV_8U);
 
+    cout << labeled_image << endl;
+    cout << stats << endl;
+    cout << centroids << endl;
+    
     String window_name = "Display Image";
     imshow(window_name, labeled_image);
     namedWindow(window_name, WINDOW_NORMAL);
-
+    imwrite("labeledImage.pgm", labeled_image);
+    
     waitKey(0);
+	return labeled_image;
+
 }
