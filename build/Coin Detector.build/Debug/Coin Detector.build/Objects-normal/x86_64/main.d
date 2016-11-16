@@ -116,4 +116,5 @@ dependencies: \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/fast_marching_inl.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/deblurring.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/wobble_suppression.hpp \
-  /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/ring_buffer.hpp
+  /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/ring_buffer.hpp \
+  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/DisjSets.h

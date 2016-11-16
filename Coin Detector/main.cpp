@@ -2,8 +2,8 @@
 //  main.cpp
 //  Coin Detector
 //
-//  Created by William Wu on 11/14/16.
-//  Copyright © 2016 war. All rights reserved.
+//  Created by Elizabeth Kelly and William Wu on 11/14/16.
+//  Copyright © 2016 PerspectiveProjection. All rights reserved.
 //
 
 #include <stdio.h>
