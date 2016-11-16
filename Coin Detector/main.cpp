@@ -13,12 +13,6 @@
 using namespace std;
 using namespace cv;
 
-bool sequential_labeling(Mat &img) {
-    
-    // TODO Implement sequential labeling algorithm
-    return true;
-}
-
 int main(int argc, char** argv ) {
     
     if ( argc != 2 )
@@ -46,9 +40,15 @@ int main(int argc, char** argv ) {
     //threshold the image to convert it to binary
     Mat binary_image;
     binary_image = gray_image > 50; //threshold is 50
+    
+    //perform sequential labeling (connected components algorithm) to segment the coins
+    Mat labeled_image;
+    connectedComponents(binary_image, labeled_image, 8, CV_16U);
+    //normalize the labels for better visibility
+    normalize(labeled_image, labeled_image, 0, 255, NORM_MINMAX, CV_8U);
+    
     String window_name = "Display Image";
-
-    imshow(window_name, binary_image);
+    imshow(window_name, labeled_image);
     namedWindow(window_name, WINDOW_NORMAL);
     
     waitKey(0);
