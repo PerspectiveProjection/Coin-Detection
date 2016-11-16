@@ -12,10 +12,13 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include "Coin.cpp"
+#include <vector>
 
 using namespace cv;
 using namespace std;
 
-Mat GrayscaleAndLabelImage(Mat originalImage);
+Mat GrayscaleAndLabelImage(Mat orig_image);
+
+vector<Coin> setCoins(Mat image, Mat stats, Mat centroids);
 
 #endif /* ImageFunctions_hpp */

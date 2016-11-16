@@ -9,6 +9,7 @@
 #include "ImageFunctions.hpp"
 #include <opencv2/opencv.hpp>
 #include "Coin.hpp"
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -32,10 +33,8 @@ Mat GrayscaleAndLabelImage(Mat orig_image) {
     //normalize the labels for better visibility
     normalize(labeled_image, labeled_image, 0, 255, NORM_MINMAX, CV_8U);
 
-    cout << labeled_image << endl;
-    cout << stats.at<int>(1, CC_STAT_TOP) << endl;
-    cout << centroids.at<int>(1) << endl;
-    
+    setCoins(labeled_image, stats, centroids);
+
     String window_name = "Display Image";
     imshow(window_name, labeled_image);
     namedWindow(window_name, WINDOW_NORMAL);
@@ -43,5 +42,13 @@ Mat GrayscaleAndLabelImage(Mat orig_image) {
     
     waitKey(0);
 	return labeled_image;
+}
 
+vector<Coin> setCoins(Mat labeled_image, Mat stats, Mat centroids) {
+    vector<Coin> coinVector;
+    cout << labeled_image << endl;
+    cout << stats.at<int>(1, CC_STAT_TOP) << endl;
+    cout << centroids.at<int>(1) << endl;
+    
+    return coinVector;
 }
