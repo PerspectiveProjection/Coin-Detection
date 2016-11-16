@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3DA251421DDBFA5E000FEBD3 /* ImageFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DA251401DDBFA5E000FEBD3 /* ImageFunctions.cpp */; };
 		3DEDCF151DDA98B3004A4962 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DEDCF141DDA98B3004A4962 /* main.cpp */; };
 		550526BE1DDBE0EF0068D058 /* Coin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 550526BA1DDBE0EF0068D058 /* Coin.cpp */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3DA251401DDBFA5E000FEBD3 /* ImageFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageFunctions.cpp; sourceTree = "<group>"; };
+		3DA251411DDBFA5E000FEBD3 /* ImageFunctions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ImageFunctions.hpp; sourceTree = "<group>"; };
 		3DEDCF111DDA98B3004A4962 /* Coin Detector */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Coin Detector"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DEDCF141DDA98B3004A4962 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		550526BA1DDBE0EF0068D058 /* Coin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Coin.cpp; sourceTree = "<group>"; };
@@ -64,6 +67,8 @@
 				3DEDCF141DDA98B3004A4962 /* main.cpp */,
 				550526BA1DDBE0EF0068D058 /* Coin.cpp */,
 				550526BB1DDBE0EF0068D058 /* Coin.hpp */,
+				3DA251401DDBFA5E000FEBD3 /* ImageFunctions.cpp */,
+				3DA251411DDBFA5E000FEBD3 /* ImageFunctions.hpp */,
 			);
 			path = "Coin Detector";
 			sourceTree = "<group>";
@@ -95,7 +100,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = war;
+				ORGANIZATIONNAME = "Perspective Projection";
 				TargetAttributes = {
 					3DEDCF101DDA98B2004A4962 = {
 						CreatedOnToolsVersion = 8.1;
@@ -125,6 +130,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DA251421DDBFA5E000FEBD3 /* ImageFunctions.cpp in Sources */,
 				550526BE1DDBE0EF0068D058 /* Coin.cpp in Sources */,
 				3DEDCF151DDA98B3004A4962 /* main.cpp in Sources */,
 			);

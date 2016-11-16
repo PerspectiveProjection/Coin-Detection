@@ -1,5 +1,6 @@
 dependencies: \
-  /Users/william/Projects/CoinDetection/Coin\ Detector/main.cpp \
+  /Users/william/Projects/CoinDetection/Coin\ Detector/ImageFunctions.cpp \
+  /Users/william/Projects/CoinDetection/Coin\ Detector/ImageFunctions.hpp \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/opencv.hpp \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/opencv_modules.hpp \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/core.hpp \
@@ -118,6 +119,5 @@ dependencies: \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/videostab/deblurring.hpp \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/videostab/wobble_suppression.hpp \
   /usr/local/Cellar/opencv3/HEAD-a679e4c_4/include/opencv2/videostab/ring_buffer.hpp \
-  /Users/william/Projects/CoinDetection/Coin\ Detector/Coin.hpp \
-  /Users/william/Projects/CoinDetection/Coin\ Detector/ImageFunctions.hpp \
-  /Users/william/Projects/CoinDetection/Coin\ Detector/Coin.cpp
+  /Users/william/Projects/CoinDetection/Coin\ Detector/Coin.cpp \
+  /Users/william/Projects/CoinDetection/Coin\ Detector/Coin.hpp
