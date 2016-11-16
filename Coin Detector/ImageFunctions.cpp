@@ -33,8 +33,8 @@ Mat GrayscaleAndLabelImage(Mat orig_image) {
     normalize(labeled_image, labeled_image, 0, 255, NORM_MINMAX, CV_8U);
 
     cout << labeled_image << endl;
-    cout << stats << endl;
-    cout << centroids << endl;
+    cout << stats.at<int>(1, CC_STAT_TOP) << endl;
+    cout << centroids.at<int>(1) << endl;
     
     String window_name = "Display Image";
     imshow(window_name, labeled_image);
