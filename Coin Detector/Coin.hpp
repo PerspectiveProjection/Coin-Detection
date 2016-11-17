@@ -16,19 +16,21 @@ using namespace std;
 
 class Coin {
     public:
-        Coin(int a = 0, int l = 0, int x = 0, int y = 0, double w = 0) : area(a), label(l), centerX(x),
-            centerY(y), worth(w) {};
+        Coin(int a = 0, int l = 0, int x = 0, int y = 0, double w = 0) : area(a), label(l), center_x(x),
+            center_y(y), worth(w) {};
     
 		int getArea() const { return area; }
-		int getCenterX() const { return centerX; }
-		int getCenterY() const { return centerY; }
+        int getLabel() const { return label; }
+		int getCenterX() const { return center_x; }
+		int getCenterY() const { return center_y; }
 		double getWorth() const { return worth; }
     
+        void setWorth(int new_worth) { worth = new_worth; }
     private:
         int area;
         int label;
-        int centerX;
-        int centerY;
+        int center_x;
+        int center_y;
         double worth;
 };
 #endif /* Coin_hpp */

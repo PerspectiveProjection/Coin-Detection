@@ -21,8 +21,8 @@ int main(int argc, char** argv) {
         return -1;
     }
     
-    String imageFile = argv[1]; //filename for the coin image
-    Mat orig_image = imread(imageFile); //read the file
+    String image_file = argv[1]; //filename for the coin image
+    Mat orig_image = imread(image_file); //read the file
     resize(orig_image, orig_image, cvSize(378, 504)); //resize the image
     
     if (!orig_image.data) {
@@ -30,8 +30,12 @@ int main(int argc, char** argv) {
         return -1;
     }
    
-	//Assign labels to coins on a binary image
-    Mat labeledImage = GrayscaleAndLabelImage(orig_image);
+	//assign labels to coins on a binary image
+    vector<Coin> coin_vector = setCoinAttributes(orig_image);
 
+    Mat transformed_image = circularHough(orig_image);
+    
 	return 0;
 }
+
+

@@ -17,8 +17,10 @@
 using namespace cv;
 using namespace std;
 
-Mat GrayscaleAndLabelImage(Mat orig_image);
+vector<Coin> setCoinAttributes(Mat orig_image);
 
-vector<Coin> setCoins(Mat image, Mat stats, Mat centroids);
+void setCoins(vector<Coin> *coinVector, Mat image, Mat stats, Mat centroids);
+
+Mat circularHough(Mat orig_image);
 
 #endif /* ImageFunctions_hpp */
