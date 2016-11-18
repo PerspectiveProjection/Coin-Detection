@@ -23,4 +23,7 @@ void setCoins(vector<Coin> *coinVector, Mat image, Mat stats, Mat centroids);
 
 Mat circularHough(Mat orig_image);
 
+void templateMatch(Mat image, vector<Coin> coins);
+
+
 #endif /* ImageFunctions_hpp */

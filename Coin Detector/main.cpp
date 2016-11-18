@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     
     String image_file = argv[1]; //filename for the coin image
     Mat orig_image = imread(image_file); //read the file
-    resize(orig_image, orig_image, cvSize(378, 504)); //resize the image
+    resize(orig_image, orig_image, cvSize(378, 504)); //resize the image to 1/8th it's original size
     
     if (!orig_image.data) {
         printf("No image data \n");
@@ -34,6 +34,9 @@ int main(int argc, char** argv) {
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
 
     Mat transformed_image = circularHough(orig_image);
+    
+    //templateMatch(orig_image, coin_vector);
+    
     
 	return 0;
 }

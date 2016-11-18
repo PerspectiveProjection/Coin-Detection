@@ -14,6 +14,14 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * Function that blurs then grayscales the image, converts it to binary, and labels the objects 
+ using the connected components method. The resulting images from the connected components method contain
+ information about the object's label and centroid in the for of a matrix (image), which are the passed 
+ into the setCoins method.
+ * orig_image is the input image of coins.
+ * Returns a vector of Coin objects computed by the setCoins method.
+ **/
 vector<Coin> setCoinAttributes(Mat orig_image) {
 	//convert the image to grayscale
     Mat gray_image;
@@ -41,6 +49,14 @@ vector<Coin> setCoinAttributes(Mat orig_image) {
     return coin_vector;
 }
 
+/**
+ * Function that creates a Coin object using the computed center x,y coordinates, area, and label. 
+ The objects are then pushed into a vector of type Coin.
+ * coin_vector is the vector of Coin objects.
+ * labled_image is the image with labeled/segmented coin objects
+ * stats is the matrix computed from the connected components method
+ * centroids is the matrix computed from the connected components method
+ **/
 void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centroids) {
     //navigate through objects, skipping 0 since it's background
     for(int i = 1; i < stats.cols; i++) {
@@ -51,14 +67,20 @@ void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centr
 
         //create a new coin and push back into vector
         Coin new_coin(stats.at<int>(i, CC_STAT_AREA), label,
-                     centroids.at<double>(i, 0),
-                     centroids.at<double>(i, 1),
+                     center_x,
+                     center_y,
                      0);
         
         coin_vector -> push_back(new_coin);
     }
 }
 
+/**
+ * Function that converts an image to grayscale and performs a circular Hough transform to detect the 
+ cirlces, their contours, and their centers.
+ * orig_image is the input image of coins.
+ * Returns the original image with the centers and outlines of the detected circles drawn on.
+ **/
 Mat circularHough(Mat orig_image) {
     Mat grey_image;
     vector<Vec3f> circles;
@@ -66,8 +88,8 @@ Mat circularHough(Mat orig_image) {
     //greyscale image
     cvtColor(orig_image, grey_image, COLOR_BGR2GRAY);
     //blur image and save to grey_image
-    GaussianBlur(grey_image, grey_image, Size(9,9), 2, 2);
-    
+    GaussianBlur(grey_image, grey_image, Size(7,7), 0);
+
     //circular hough transform, save [x-coord, y-coord, radius] in circles vector
     //4 numbers at end control, upper threshold for canny, threshold for center,
     //min and max radius to be detected, 0 is default.
@@ -93,3 +115,18 @@ Mat circularHough(Mat orig_image) {
     
     return orig_image;
 }
+
+/* TODO implement template matching
+void templateMatch(Mat orig_image, vector<Coin> coin_vector) {
+    Mat quarter_template = imread("../../Images/Quarter_Face.jpg");
+    Mat penny_template = imread("../../Images/Penny_Face.jpg");
+    resize(penny_template, penny_template, cvSize(penny_template.rows, penny_template.cols)); //resize the image
+    resize(quarter_template, quarter_template, cvSize(quarter_template.rows, quarter_template.cols)); //resize the image
+    
+    Mat matched_image;
+
+    matchTemplate(orig_image, quarter_template, matched_image, TM_SQDIFF_NORMED);
+    matchTemplate(orig_image, penny_template, matched_image, TM_SQDIFF_NORMED);
+    imwrite("matchedImage.jpg", matched_image);
+
+}*/
