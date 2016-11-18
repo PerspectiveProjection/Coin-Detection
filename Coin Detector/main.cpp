@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
 
-    Mat transformed_image = circularHough(orig_image);
+    Mat transformed_image = circularHough(orig_image, &coin_vector);
     
     //templateMatch(orig_image, coin_vector);
     

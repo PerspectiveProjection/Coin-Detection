@@ -81,7 +81,7 @@ void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centr
  * orig_image is the input image of coins.
  * Returns the original image with the centers and outlines of the detected circles drawn on.
  **/
-Mat circularHough(Mat orig_image) {
+Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     Mat grey_image;
     vector<Vec3f> circles;
     
@@ -99,7 +99,9 @@ Mat circularHough(Mat orig_image) {
     for(int i = 0; i < circles.size(); i++) {
         //get (x, y) coordinates and radius
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-        int radius = cvRound(circles[i][2]);
+        double radius = cvRound(circles[i][2]);
+        //set radius from circles
+        coin_vector -> at(i).setRadius(radius);
         //draw circle centers
         circle(orig_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
         //draw circle outlines
