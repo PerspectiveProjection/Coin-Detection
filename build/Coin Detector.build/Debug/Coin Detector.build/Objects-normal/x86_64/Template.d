@@ -1,6 +1,6 @@
 dependencies: \
-  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/ImageFunctions.cpp \
-  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/ImageFunctions.hpp \
+  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/Template.cpp \
+  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/Template.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/opencv.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/opencv_modules.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/core.hpp \
@@ -117,7 +117,4 @@ dependencies: \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/fast_marching_inl.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/deblurring.hpp \
   /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/wobble_suppression.hpp \
-  /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/ring_buffer.hpp \
-  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/Coin.cpp \
-  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/Coin.hpp \
-  /Users/Elizabeth/Documents/Computer\ Vision/CoinDetection/Coin\ Detector/Template.hpp
+  /usr/local/Cellar/opencv3/HEAD-c93fb14_4/include/opencv2/videostab/ring_buffer.hpp

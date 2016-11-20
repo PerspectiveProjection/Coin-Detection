@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include "Coin.cpp"
+#include "Template.hpp"
 #include <vector>
 
 using namespace cv;
@@ -23,7 +24,7 @@ void setCoins(vector<Coin> *coinVector, Mat image, Mat stats, Mat centroids);
 
 Mat circularHough(Mat orig_image, vector<Coin> *coin_vector);
 
-void templateMatch(Mat image, vector<Coin> coins);
+void templateMatch(Mat image, vector<Coin> coins, vector<Template> templates);
 
 
 #endif /* ImageFunctions_hpp */
