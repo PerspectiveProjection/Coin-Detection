@@ -88,15 +88,18 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     vector<Vec3f> circles;
     
     //greyscale image
-    cvtColor(orig_image, grey_image, COLOR_BGR2GRAY);
+    //cvtColor(orig_image, grey_image, COLOR_BGR2GRAY);
+    imwrite("gray_orig_image1.jpg", orig_image);
+
     //blur image and save to grey_image
-    GaussianBlur(grey_image, grey_image, Size(7,7), 0);
+    GaussianBlur(orig_image, grey_image, Size(7,7), 0);
 
     //circular hough transform, save [x-coord, y-coord, radius] in circles vector
     //4 numbers at end control, upper threshold for canny, threshold for center,
     //min and max radius to be detected, 0 is default.
     HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 150, 50, 0, 0);
-    
+    imwrite("gray_orig_image2.jpg", orig_image);
+
     //go through circles vector
     for(int i = 0; i < circles.size(); i++) {
         //get (x, y) coordinates and radius
@@ -105,23 +108,27 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
         //set radius from circles
         coin_vector -> at(i).setRadius(radius);
         //draw circle centers
-        circle(orig_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
+        circle(grey_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
         //draw circle outlines
-        circle(orig_image, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+        circle(grey_image, center, radius, Scalar(0, 0, 255), 3, 8, 0);
     }
     
     //display image
-    namedWindow("Hough Demo", WINDOW_AUTOSIZE);
-    imshow("Hough Demo", orig_image);
+    //namedWindow("Hough Demo", WINDOW_AUTOSIZE);
+    //imshow("Hough Demo", grey_image);
     //save image
-    imwrite("houghImage.jpg", orig_image);
-    waitKey(0);
+    imwrite("houghImage.jpg", grey_image);
+    //waitKey(0);
     
     return orig_image;
 }
 
 //TODO implement template matching
 void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> templates) {
+    //greyscale original image
+    //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
+    imwrite("origImage1.jpg", orig_image);
+
     //string for the filename
     string name = "";
     //new vector of resized templates
@@ -165,37 +172,71 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
         imwrite(name + ".jpg", templates[i].getTemplate());
     }
     //resize the templates
-    for (int j = 0; j < templates.size(); j++) {
-        Mat temp_resize_image;
-        //scale factor
-        double scale = templates[j].getRadius() /  coin_vector[j].getRadius();
-        int rows = templates[j].getTemplate().rows;
-        int cols = templates[j].getTemplate().cols;
-        //scale the template down
-        int new_rows = rows/scale;
-        int new_cols = cols/scale;
-        //check
-        cout << rows << " " << cols << endl;
-        cout << new_rows << " " << new_cols << endl;
+    int counter = 0;
+    for (int i = 0; i < coin_vector.size(); i++) {
+        for (int j = 0; j < templates.size(); j++) {
+            Mat temp_resize_image;
+            //scale factor
+            double scale = templates[j].getRadius() / coin_vector[i].getRadius();
+            int rows = templates[j].getTemplate().rows;
+            int cols = templates[j].getTemplate().cols;
+            //scale the template down
+            int new_rows = rows/scale;
+            int new_cols = cols/scale;
+            //check
+            cout << templates[j].getName() << " " <<  new_rows << " " << new_cols << endl;
         
-        resize(templates[j].getTemplate(), temp_resize_image, cvSize(new_rows, new_cols));
-        //templates[j].getTemplate() = temp_resize_image; -->did not work
+            resize(templates[j].getTemplate(), temp_resize_image, cvSize(new_rows, new_cols));
         
-        //create new Template object with the template name and rescaled template
-        Template resized_template(templates[j].getName(), temp_resize_image);
-        //push into the resized template vector
-        resized_templates.push_back(resized_template);
+            //create new Template object with the template name and rescaled template
+            Template resized_template(templates[j].getName(), temp_resize_image);
+            //push into the resized template vector
+            resized_templates.push_back(resized_template);
         
-        name = "template_resize" + to_string(j+1);
-        imwrite(name + ".jpg", resized_templates[j].getTemplate());
+            name = "template_resize" + to_string(i+1) + to_string(j+1);
+            imwrite(name + ".jpg", resized_templates[counter].getTemplate());
+            
+            Mat matched_image;
+            Mat temp_orig_image;// = orig_image;
+            orig_image.copyTo(temp_orig_image);
+            
+            int result_cols =  orig_image.cols - resized_templates[counter].getTemplate().cols + 1;
+            int result_rows = orig_image.rows - resized_templates[counter].getTemplate().rows + 1;
+            
+            int flag = CV_TM_SQDIFF_NORMED;
+            matched_image.create( result_rows, result_cols, CV_32FC1 );
+            
+            matchTemplate(orig_image, resized_templates[counter].getTemplate(), matched_image, flag);
+            normalize( matched_image, matched_image, 0, 255, NORM_MINMAX, -1, Mat() );
+            //normalize(matched_image, matched_image, 0, 255, NORM_MINMAX, CV_8U);
+
+            
+            double minVal; double maxVal; Point minLoc; Point maxLoc;
+            Point matchLoc;
+            minMaxLoc( matched_image, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+            
+            if( flag  == CV_TM_SQDIFF || flag == CV_TM_SQDIFF_NORMED ) {
+                matchLoc = minLoc;
+            }
+            else {
+                matchLoc = maxLoc;
+            }
+            cout << "match loc " << matchLoc << endl;
+
+
+            rectangle( temp_orig_image, matchLoc, Point( matchLoc.x + resized_templates[counter].getTemplate().cols , matchLoc.y + resized_templates[counter].getTemplate().rows ), Scalar::all(0), 2, 8, 0 );
+            
+            rectangle( matched_image, matchLoc, Point( matchLoc.x + resized_templates[counter].getTemplate().cols , matchLoc.y + resized_templates[counter].getTemplate().rows ), Scalar::all(0), 2, 8, 0 );
+            
+            name = "matched_orig_image" + to_string(i+1) + to_string(j+1);
+            imwrite(name + ".jpg", temp_orig_image);
+            
+            name = "matched_image" + to_string(i+1) + to_string(j+1);
+            imwrite(name + ".jpg", matched_image);
+            
+            counter++;
+        }
     }
-    /*
-    //TODO rotate each template via loop and perform matchTemplate at each iteration for each template
-    Mat matched_image;
-    
-    //matchTemplate(orig_image, resized_templates[j].getTemplate(), matched_image, TM_SQDIFF_NORMED);
-    imwrite("matchedImage.jpg", matched_image);
-    */
     
     //check
     for (int i = 0; i < coin_vector.size(); i++) {

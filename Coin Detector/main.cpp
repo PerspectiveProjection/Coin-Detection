@@ -25,6 +25,8 @@ int main(int argc, char** argv) {
     String image_file = argv[1]; //filename for the coin image
     Mat orig_image = imread(image_file); //read the file
     resize(orig_image, orig_image, cvSize(378, 504)); //resize the image to 1/8th it's original size
+    //greyscale original image
+    //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     
     //read in the 710x710 templates and store them in an array
     Mat quarter_template = imread("../../Images/Templates/Quarter_Face.jpg");
@@ -62,7 +64,14 @@ int main(int argc, char** argv) {
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
 
+    //greyscale original image
+    //Mat gray_orig_image = orig_image;
+    cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     Mat transformed_image = circularHough(orig_image, &coin_vector);
+    
+    imwrite("origImage.jpg", orig_image);
+
+    
     
     templateMatch(orig_image, coin_vector, templates);
     
