@@ -67,7 +67,6 @@ void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centr
         int center_x = centroids.at<double>(i, 0);
         int center_y = centroids.at<double>(i, 1);
         int label = labeled_image.at<uchar>(center_y, center_x);
-
         //create a new coin and push back into vector
         Coin new_coin(stats.at<int>(i, CC_STAT_AREA), label,
                      center_x,
@@ -93,12 +92,12 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     imwrite("gray_orig_image1.jpg", orig_image);
 
     //blur image and save to grey_image
-    GaussianBlur(orig_image, grey_image, Size(7,7), 0);
+    GaussianBlur(orig_image, grey_image, Size(9,9), 0);
 
     //circular hough transform, save [x-coord, y-coord, radius] in circles vector
     //4 numbers at end control, upper threshold for canny, threshold for center,
     //min and max radius to be detected, 0 is default.
-    HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 200, 50, 0, 0);
+    HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 100, 50, 0, 0);
 
     //go through circles vector
     for(int i = 0; i < circles.size(); i++) {
@@ -106,6 +105,8 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
         double radius = cvRound(circles[i][2]);
         //set radius from circles vector
+        cout << center << " " << radius << endl;
+        
         //because the circles vector sorts it's objects, we need to match the coin objects and detected
         //coins by their center x, y coordinates by a small margin of error (off by 2)
         for (int j = 0; j < coin_vector->size(); j++) {
@@ -123,7 +124,7 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     //namedWindow("Hough Demo", WINDOW_AUTOSIZE);
     //imshow("Hough Demo", grey_image);
     //save image
-    imwrite("houghImage.jpg", grey_image);
+    imwrite("houghImage.pgm", grey_image);
     //waitKey(0);
     
     return orig_image;
@@ -142,41 +143,38 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
     
     for (int i = 0; i < templates.size(); i++) {
         Mat temp_blur_image;
-        //corcle vector for the hough transform
+        //circle vector for the hough transform
         vector<Vec3f> temp_circles;
         
+        //load the Mat for each template coin and save to directory
         name = "template" + to_string(i+1);
         imwrite(name + ".jpg", templates[i].getTemplate());
-        //blur the template
-        GaussianBlur(templates[i].getTemplate(), temp_blur_image, Size(7,7), 0);
         
+        //blur the template and save
+        GaussianBlur(templates[i].getTemplate(), temp_blur_image, Size(7,7), 0);
         name = "template_blur" + to_string(i+1);
         imwrite(name + ".jpg", temp_blur_image);
         
-        //circular hough transform, save [x-coord, y-coord, radius] in circles vector
+        //circular hough transform for templates, save [x-coord, y-coord, radius] in circles vector
         //4 numbers at end control, upper threshold for canny, threshold for center,
         //min and max radius to be detected, 0 is default.
         HoughCircles(temp_blur_image, temp_circles, HOUGH_GRADIENT, 1, temp_blur_image.rows/8, 150, 100, 0, 0);
-        //loop through circles vector to obtain the center points and radius
-        for(int k = 0; k < temp_circles.size(); k++) {
-            //get (x, y) coordinates and radius
-            Point center(cvRound(temp_circles[k][0]), cvRound(temp_circles[k][1]));
-            double radius = cvRound(temp_circles[k][2]);
-            //set radius from circles
-            templates[i].setRadius(radius);
-            //check
-            //draw circle centers
-            circle(templates[i].getTemplate(), center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            //draw circle outlines
-            circle(templates[i].getTemplate(), center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            
-        }
-        //clear circles vector to reuse
-        temp_circles.clear();
+        
+        //Get center and radius for each template via temp_circles vector and
+        //set it in the Template object
+        Point center(cvRound(temp_circles[0][0]), cvRound(temp_circles[0][1]));
+        double radius = cvRound(temp_circles[0][2]);
+        templates[i].setRadius(radius);
+        
+        //Plot the center
+        circle(templates[i].getTemplate(), center, 3, Scalar(0, 255, 0), -1, 8, 0);
+        //Draw the center
+        circle(templates[i].getTemplate(), center, radius, Scalar(0, 0, 255), 3, 8, 0);
         
         name = "template_hough" + to_string(i+1);
-        imwrite(name + ".jpg", templates[i].getTemplate());
+        imwrite(name + ".pgm", templates[i].getTemplate());
     }
+    
     //resize the templates
     int counter = 0;
     for (int i = 0; i < coin_vector.size(); i++) {

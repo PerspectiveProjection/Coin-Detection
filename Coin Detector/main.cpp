@@ -55,23 +55,21 @@ int main(int argc, char** argv) {
         Template temp_template(template_names[i], temp_gray_image);
         templates.push_back(temp_template);
     }
-
+    
     if (!orig_image.data) {
         printf("No image data \n");
         return -1;
     }
-   
+    
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
-
+    
     //greyscale original image
     //Mat gray_orig_image = orig_image;
     cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     Mat transformed_image = circularHough(orig_image, &coin_vector);
     
     imwrite("origImage.jpg", orig_image);
-
-    
     
     templateMatch(orig_image, coin_vector, templates);
     
