@@ -17,15 +17,15 @@ using namespace std;
 using namespace cv;
 
 /**
- * Function that blurs then grayscales the image, converts it to binary, and labels the objects 
+ * Function that blurs then grayscales the image, converts it to binary, and labels the objects
  using the connected components method. The resulting images from the connected components method contain
- information about the object's label and centroid in the for of a matrix (image), which are the passed 
+ information about the object's label and centroid in the for of a matrix (image), which are the passed
  into the setCoins method.
  * orig_image is the input image of coins.
  * Returns a vector of Coin objects computed by the setCoins method.
  **/
 vector<Coin> setCoinAttributes(Mat orig_image) {
-	//convert the image to grayscale
+    //convert the image to grayscale
     Mat gray_image;
     cvtColor(orig_image, gray_image, CV_BGR2GRAY);
     //blur the image to remove high frequencies and noise from dust particles
@@ -43,17 +43,17 @@ vector<Coin> setCoinAttributes(Mat orig_image) {
     //normalize the labels for better visibility
     normalize(labeled_image, labeled_image, 0, 255, NORM_MINMAX, CV_8U);
     imwrite("labeled_image.jpg", labeled_image);
-
+    
     //pass labeled image to coin creation function
     vector<Coin> coin_vector;
     setCoins(&coin_vector, labeled_image, stats, centroids);
-
+    
     //return vector of coins
     return coin_vector;
 }
 
 /**
- * Function that creates a Coin object using the computed center x,y coordinates, area, and label. 
+ * Function that creates a Coin object using the computed center x,y coordinates, area, and label.
  The objects are then pushed into a vector of type Coin.
  * coin_vector is the vector of Coin objects.
  * labled_image is the image with labeled/segmented coin objects
@@ -67,19 +67,19 @@ void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centr
         int center_x = centroids.at<double>(i, 0);
         int center_y = centroids.at<double>(i, 1);
         int label = labeled_image.at<uchar>(center_y, center_x);
-
+        
         //create a new coin and push back into vector
         Coin new_coin(stats.at<int>(i, CC_STAT_AREA), label,
-                     center_x,
-                     center_y,
-                     0);
+                      center_x,
+                      center_y,
+                      0);
         
         coin_vector -> push_back(new_coin);
     }
 }
 
 /**
- * Function that converts an image to grayscale and performs a circular Hough transform to detect the 
+ * Function that converts an image to grayscale and performs a circular Hough transform to detect the
  cirlces, their contours, and their centers.
  * orig_image is the input image of coins.
  * Returns the original image with the centers and outlines of the detected circles drawn on.
@@ -91,15 +91,15 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     //greyscale image
     //cvtColor(orig_image, grey_image, COLOR_BGR2GRAY);
     imwrite("gray_orig_image1.jpg", orig_image);
-
+    
     //blur image and save to grey_image
     GaussianBlur(orig_image, grey_image, Size(7,7), 0);
-
+    
     //circular hough transform, save [x-coord, y-coord, radius] in circles vector
     //4 numbers at end control, upper threshold for canny, threshold for center,
     //min and max radius to be detected, 0 is default.
     HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 200, 50, 0, 0);
-
+    
     //go through circles vector
     for(int i = 0; i < circles.size(); i++) {
         //get (x, y) coordinates and radius
@@ -134,7 +134,7 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
     //greyscale original image
     //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     imwrite("origImage1.jpg", orig_image);
-
+    
     //string for the filename
     string name = "";
     //new vector of resized templates
@@ -179,6 +179,7 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
     }
     //resize the templates
     int counter = 0;
+    
     for (int i = 0; i < coin_vector.size(); i++) {
         for (int j = 0; j < templates.size(); j++) {
             Mat temp_resize_image;
@@ -192,61 +193,82 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
             //check
             cout << "*********************" << endl;
             cout << templates[j].getName() << " " <<  new_rows << " " << new_cols << endl;
-        
+            
             resize(templates[j].getTemplate(), temp_resize_image, cvSize(new_rows, new_cols));
-            int new_radius = templates[i].getRadius() / scale;
-            cout << "new radius " << new_radius << endl;
-            cout << "coin radius " << coin_vector[i].getRadius() << " label " << coin_vector[i].getLabel() << endl;
-
+            int scaled_radius = templates[i].getRadius() / scale;
+            cout << "coin " << i+1 << " radius " << coin_vector[i].getRadius() << " label " << coin_vector[i].getLabel() << endl;
+            
             //create new Template object with the template name and rescaled template
             Template resized_template(templates[j].getName(), temp_resize_image);
             //push into the resized template vector
             resized_templates.push_back(resized_template);
-            
-            GaussianBlur(temp_resize_image, temp_resize_image, Size(7,7), 0);
-            vector<Vec3f> temp_circles;
-            HoughCircles(temp_resize_image, temp_circles, HOUGH_GRADIENT, 1, temp_resize_image.rows/8, 100, 30, 0, 0);
-            imwrite("temp_resize_image.jpg", temp_resize_image);
-            //loop through circles vector to obtain the center points and radius
-            for(int k = 0; k < temp_circles.size(); k++) {
-                //get (x, y) coordinates and radius
-                Point center(cvRound(temp_circles[k][0]), cvRound(temp_circles[k][1]));
-                double radius = cvRound(temp_circles[k][2]);
-                //set radius from circles
-                resized_templates[counter].setRadius(radius);
-                //check
-                //draw circle centers
-                circle(temp_resize_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-                //draw circle outlines
-                circle(temp_resize_image, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            }
-            //clear circles vector to reuse
-            temp_circles.clear();
-            
-            name = "template_resize_hough" + to_string(i+1);
-            imwrite(name + ".jpg", temp_resize_image);
-            
+            resized_templates[counter].setRadius(scaled_radius);
+            /* HOUGH TRANSFORM
+             GaussianBlur(temp_resize_image, temp_resize_image, Size(7,7), 0);
+             vector<Vec3f> temp_circles;
+             HoughCircles(temp_resize_image, temp_circles, HOUGH_GRADIENT, 1, temp_resize_image.rows/8, 100, 30, 0, 0);
+             
+             imwrite("temp_resize_image.jpg", temp_resize_image);
+             //loop through circles vector to obtain the center points and radius
+             for(int k = 0; k < temp_circles.size(); k++) {
+             //get (x, y) coordinates and radius
+             Point center(cvRound(temp_circles[k][0]), cvRound(temp_circles[k][1]));
+             double radius = cvRound(temp_circles[k][2]);
+             //set radius from circles
+             resized_templates[counter].setRadius(radius);
+             //check
+             //draw circle centers
+             circle(temp_resize_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
+             //draw circle outlines
+             circle(temp_resize_image, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+             }
+             //clear circles vector to reuse
+             temp_circles.clear();
+             
+             name = "template_resize_hough" + to_string(i+1);
+             imwrite(name + ".jpg", temp_resize_image);
+             */
             cout << "Scaled radius " << resized_templates[counter].getRadius() << endl;
-        
+            
+            
+            //perform SEQUENTIAL LABELING (connected components algorithm) to segment the coins
+            Mat labeled_image;
+            Mat stats, centroids;
+            GaussianBlur(temp_resize_image, temp_resize_image, Size(7,7), 0);
+            connectedComponentsWithStats(temp_resize_image, labeled_image, stats, centroids, 8, CV_16U);
+            
+            //normalize the labels for better visibility
+            normalize(labeled_image, labeled_image, 0, 1, NORM_MINMAX, CV_8U);
+            name = "labeled_template" + to_string(i+1) + to_string(j+1);
+            imwrite(name + ".jpg", labeled_image);
+            
+            /*
+            for(int i = 1; i < stats.cols; i++) {
+                //grab x, y of center then the label at that point
+                int center_x = centroids.at<double>(i, 0);
+                int center_y = centroids.at<double>(i, 1);
+                int label = labeled_image.at<uchar>(center_y, center_x);
+            }*/
+
             name = "template_resize" + to_string(i+1) + to_string(j+1);
             imwrite(name + ".jpg", resized_templates[counter].getTemplate());
             
             Mat matched_image;
             Mat temp_orig_image = orig_image;
-            //orig_image.copyTo(temp_orig_image);
             
-            int result_cols = orig_image.cols + resized_templates[counter].getTemplate().cols + 1;
-            int result_rows = orig_image.rows + resized_templates[counter].getTemplate().rows + 1;
+            int result_cols = orig_image.cols - resized_templates[counter].getTemplate().cols + 1;
+            int result_rows = orig_image.rows - resized_templates[counter].getTemplate().rows + 1;
             
             int flag = CV_TM_SQDIFF_NORMED;
             matched_image.create( result_rows, result_cols, CV_32FC1 );
+            //check
             cout << matched_image.rows << " " << matched_image.cols << endl;
-
+            
             matchTemplate(orig_image, resized_templates[counter].getTemplate(), matched_image, flag);
             cout << matched_image.rows << " " << matched_image.cols << endl;
-
+            
             normalize( matched_image, matched_image, 0, 255, NORM_MINMAX, -1, Mat() );
-
+            
             double minVal; double maxVal; Point minLoc; Point maxLoc;
             Point matchLoc;
             minMaxLoc( matched_image, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
@@ -258,16 +280,17 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
                 matchLoc = maxLoc;
             }
             cout << "match loc " << matchLoc << " min loc " << minLoc << " max loc " << maxLoc << endl;
-
+            
             rectangle( matched_image, matchLoc, Point( matchLoc.x + resized_templates[counter].getTemplate().cols , matchLoc.y + resized_templates[counter].getTemplate().rows ), Scalar::all(0), 2, 8, 0 );
             
             rectangle( temp_orig_image, matchLoc, Point( matchLoc.x + resized_templates[counter].getTemplate().cols , matchLoc.y + resized_templates[counter].getTemplate().rows ), Scalar::all(0), 2, 8, 0 );
-
+            
             name = "matched_orig_image" + to_string(i+1) + to_string(j+1);
             imwrite(name + ".jpg", temp_orig_image);
             
             name = "matched_image" + to_string(i+1) + to_string(j+1);
             imwrite(name + ".jpg", matched_image);
+            
             
             counter++;
         }
