@@ -101,15 +101,18 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 200, 50, 0, 0);
 
     //go through circles vector
-    cout << "circles size " << circles.size() << endl;
     for(int i = 0; i < circles.size(); i++) {
         //get (x, y) coordinates and radius
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
         double radius = cvRound(circles[i][2]);
-        //set radius from circles
-        cout << "coin label " << coin_vector->at(i).getLabel() << endl;
-        coin_vector -> at(i).setRadius(radius);
-        cout << "coin radius " << coin_vector->at(i).getRadius() << endl;
+        //set radius from circles vector
+        //because the circles vector sorts it's objects, we need to match the coin objects and detected
+        //coins by their center x, y coordinates by a small margin of error (off by 2)
+        for (int j = 0; j < coin_vector->size(); j++) {
+            if ((coin_vector->at(j).getCenterX() >= center.x-2 && coin_vector->at(j).getCenterX() <= center.x+2) && (coin_vector->at(j).getCenterY() >= center.y-2 && coin_vector->at(j).getCenterY() <= center.y+2)) {
+                coin_vector -> at(j).setRadius(radius);
+            }
+        }
         //draw circle centers
         circle(grey_image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
         //draw circle outlines
