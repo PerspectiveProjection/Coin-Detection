@@ -16,6 +16,8 @@
 using namespace std;
 using namespace cv;
 
+Mat rotateImage(Mat orig_image);
+
 int main(int argc, char** argv) {
     if (argc != 2) {
         printf("usage: DisplayImage.out <Image_Path>\n");
@@ -79,4 +81,8 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+Mat rotateImage(Mat orig_image) { 
+	Mat rotated_image = orig_image;
+	return orig_image;
+}
 
