@@ -16,7 +16,7 @@
 using namespace std;
 using namespace cv;
 
-Mat rotateImage(Mat orig_image);
+Mat rotateImage(Mat orig_image, int angle);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -73,16 +73,24 @@ int main(int argc, char** argv) {
     
     imwrite("origImage.jpg", orig_image);
 
+	for(int angle = 0; angle < 360; angle += 15) {
+		Mat rotated_image = rotateImage(orig_image, angle);
+		imwrite("rotated" + to_string(angle) + ".jpg", rotated_image);
+	}
     
-    
-    templateMatch(orig_image, coin_vector, templates);
-    
+    //templateMatch(orig_image, coin_vector, templates);
     
 	return 0;
 }
 
-Mat rotateImage(Mat orig_image) { 
-	Mat rotated_image = orig_image;
-	return orig_image;
+Mat rotateImage(Mat orig_image, int angle) { 
+	Point2f center(orig_image.cols/2.0F, orig_image.rows/2.0F);
+	Mat rotation_matrix = getRotationMatrix2D(center, angle, 1);
+	Mat rotated_image;
+	
+	warpAffine(orig_image, rotated_image, rotation_matrix, orig_image.size());
+	//imwrite("rotated" + to_string(i) + ".jpg", rotatedImage);
+
+	return rotated_image;
 }
 
