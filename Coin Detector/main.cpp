@@ -16,6 +16,8 @@
 using namespace std;
 using namespace cv;
 
+Mat rotateImage(Mat orig_image, int angle);
+
 int main(int argc, char** argv) {
     if (argc != 2) {
         printf("usage: DisplayImage.out <Image_Path>\n");
@@ -37,6 +39,7 @@ int main(int argc, char** argv) {
     //vector of templates, in order of least amount to greatest amount
     vector<Mat> orig_templates;
     vector<string> template_names;
+    vector<int> template_radii;
     orig_templates.push_back(penny_template);
     template_names.push_back("Penny");
     orig_templates.push_back(nickel_template);
@@ -63,6 +66,16 @@ int main(int argc, char** argv) {
    
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
+    
+    for (int i = 0; i < coin_vector.size(); i++) {
+        cout << "Coin " << i+1 << endl;
+        cout << "Area " << coin_vector[i].getArea() << endl;
+        cout << "Label " << coin_vector[i].getLabel() << endl;
+        cout << "Radius " << coin_vector[i].getRadius() << endl;
+        cout << "x center " << coin_vector[i].getCenterX() << endl;
+        cout << "y center " << coin_vector[i].getCenterY() << endl;
+        cout << endl;
+    }
 
     //greyscale original image
     //Mat gray_orig_image = orig_image;
@@ -71,12 +84,24 @@ int main(int argc, char** argv) {
     
     imwrite("origImage.jpg", orig_image);
 
-    
+	for(int angle = 0; angle < 360; angle += 15) {
+		Mat rotated_image = rotateImage(orig_image, angle);
+		imwrite("rotated" + to_string(angle) + ".jpg", rotated_image);
+	}
     
     templateMatch(orig_image, coin_vector, templates);
-    
     
 	return 0;
 }
 
+Mat rotateImage(Mat orig_image, int angle) { 
+	Point2f center(orig_image.cols/2.0F, orig_image.rows/2.0F);
+	Mat rotation_matrix = getRotationMatrix2D(center, angle, 1);
+	Mat rotated_image;
+	
+	warpAffine(orig_image, rotated_image, rotation_matrix, orig_image.size());
+	//imwrite("rotated" + to_string(i) + ".jpg", rotatedImage);
+
+	return rotated_image;
+}
 
