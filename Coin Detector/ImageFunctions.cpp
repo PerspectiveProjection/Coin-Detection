@@ -12,7 +12,9 @@
 #include "Template.hpp"
 #include <vector>
 #include <string>
+#include <sstream>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 using namespace cv;
@@ -139,9 +141,11 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
 //TODO implement template matching
 void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> templates) {
     //greyscale original image
-    //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
+    Mat save_orig = orig_image;
+    cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     imwrite("origImage1.jpg", orig_image);
-    
+    imwrite("SaveOrigImage1.jpg", save_orig);
+
     //string for the filename
     string name = "";
     //new vector of resized templates
@@ -323,7 +327,23 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
     for (int w = 0; w < coin_vector.size(); w++) {
         total += coin_vector[w].getWorth();
     }
-    
+    //convert the double total to a string to be used in the message
+    stringstream stream;
+    stream << fixed << setprecision(2) << total;
+    string amt = stream.str();
+    string message = "The total is: $" + amt;
     cout << "The total is: $" << total << endl;
-     
+    
+    //set the text size
+    Size textSize = getTextSize(message, FONT_HERSHEY_PLAIN, 2, 3, 0);
+    //center the text string in the image
+    Point textOrg((save_orig.cols - textSize.width)/2, (save_orig.rows + textSize.height)/2);
+    //put the text in the image
+    //2 is the font size
+    CvScalar color = CV_RGB(255,255,255);
+    putText(save_orig, message, textOrg, FONT_HERSHEY_PLAIN, 2, color, 2);
+    
+    namedWindow("Total", WINDOW_AUTOSIZE);
+    imshow("Total", save_orig);
+    waitKey(0);
 }

@@ -83,9 +83,9 @@ int main(int argc, char** argv) {
     }
 
     //greyscale original image
-    //Mat gray_orig_image = orig_image;
-    cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
-    Mat transformed_image = circularHough(orig_image, &coin_vector);
+    Mat gray_orig_image;
+    cvtColor(orig_image, gray_orig_image, COLOR_BGR2GRAY);
+    Mat transformed_image = circularHough(gray_orig_image, &coin_vector);
     
     imwrite("origImage.jpg", orig_image);
 
