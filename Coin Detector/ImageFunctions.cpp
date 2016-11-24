@@ -99,20 +99,25 @@ Mat circularHough(Mat orig_image, vector<Coin> *coin_vector) {
     //circular hough transform, save [x-coord, y-coord, radius] in circles vector
     //4 numbers at end control, upper threshold for canny, threshold for center,
     //min and max radius to be detected, 0 is default.
-    HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 200, 50, 0, 0);
+    HoughCircles(grey_image, circles, HOUGH_GRADIENT, 1, grey_image.rows/8, 150, 50, 0, 0);
     
     //go through circles vector
     for(int i = 0; i < circles.size(); i++) {
         //get (x, y) coordinates and radius
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-        cout << " $$center$$ " << center << endl;
+        cout << " %%center%% " << center << endl;
+
         double radius = cvRound(circles[i][2]);
         //set radius from circles vector
         //because the circles vector sorts it's objects, we need to match the coin objects and detected
         //coins by their center x, y coordinates by a small margin of error (off by 2)
         for (int j = 0; j < coin_vector->size(); j++) {
+
             if ((coin_vector->at(j).getCenterX() >= center.x-3 && coin_vector->at(j).getCenterX() <= center.x+3) && (coin_vector->at(j).getCenterY() >= center.y-3 && coin_vector->at(j).getCenterY() <= center.y+3)) {
                 coin_vector -> at(j).setRadius(radius);
+                
+                cout << " $$coin center$$ " << coin_vector->at(j).getCenterX() << ", " << coin_vector->at(j).getCenterY() << endl;
+                cout << " $$center$$ " << center << endl;
             }
         }
         //draw circle centers
@@ -152,9 +157,6 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
         //blur the template
         GaussianBlur(templates[i].getTemplate(), temp_blur_image, Size(7,7), 0);
         Mat temp_hough_image = temp_blur_image;
-
-        name = "template_blur" + to_string(i+1);
-        imwrite(name + ".jpg", temp_blur_image);
         
         //circular hough transform, save [x-coord, y-coord, radius] in circles vector
         //4 numbers at end control, upper threshold for canny, threshold for center,
@@ -190,9 +192,7 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
 		circle(templates[i].getTemplate(), center, 3, Scalar(0, 255, 0), -1, 8, 0);
 		//draw circle outlines
 		circle(templates[i].getTemplate(), center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            
-        name = "template_hough" + to_string(i+1);
-        imwrite(name + ".jpg", temp_hough_image);
+
     }
     //resize the templates
     int counter = 0;
@@ -282,12 +282,10 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
         else {
             matchLoc = maxLoc;
         }
-        rectangle( matched_image, matchLoc, Point( matchLoc.x + resized_templates[k].getTemplate().cols , matchLoc.y + resized_templates[k].getTemplate().rows ), Scalar::all(255), 2, 8, 0 );
+        //rectangle( matched_image, matchLoc, Point( matchLoc.x + resized_templates[k].getTemplate().cols , matchLoc.y + resized_templates[k].getTemplate().rows ), Scalar::all(0), 2, 8, 0 );
     
         rectangle( temp_orig_image, matchLoc, Point( matchLoc.x + resized_templates[k].getTemplate().cols , matchLoc.y + resized_templates[k].getTemplate().rows ), Scalar::all(255), 2, 8, 0 );
         
-        
-    
         name = "matched_orig_image" + to_string(k+1);
         imwrite(name + ".jpg", temp_orig_image);
     
