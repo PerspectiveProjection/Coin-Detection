@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
     //vector of templates, in order of least amount to greatest amount
     vector<Mat> orig_templates;
     vector<string> template_names;
+    vector<int> template_radii;
     orig_templates.push_back(penny_template);
     template_names.push_back("Penny");
     orig_templates.push_back(nickel_template);
@@ -65,6 +66,16 @@ int main(int argc, char** argv) {
    
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
+    
+    for (int i = 0; i < coin_vector.size(); i++) {
+        cout << "Coin " << i+1 << endl;
+        cout << "Area " << coin_vector[i].getArea() << endl;
+        cout << "Label " << coin_vector[i].getLabel() << endl;
+        cout << "Radius " << coin_vector[i].getRadius() << endl;
+        cout << "x center " << coin_vector[i].getCenterX() << endl;
+        cout << "y center " << coin_vector[i].getCenterY() << endl;
+        cout << endl;
+    }
 
     //greyscale original image
     //Mat gray_orig_image = orig_image;

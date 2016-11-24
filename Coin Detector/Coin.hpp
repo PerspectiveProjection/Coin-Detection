@@ -18,7 +18,6 @@ class Coin {
     public:
         Coin(int a = 0, int l = 0, int x = 0, int y = 0, double w = 0, double r = 0) : 
 			area(a), label(l), center_x(x), center_y(y), worth(w), radius(r) {};
-    
 		int getArea() const { return area; }
         int getLabel() const { return label; }
 		int getCenterX() const { return center_x; }
@@ -28,6 +27,7 @@ class Coin {
 
         void setWorth(int new_worth) { worth = new_worth; }
 		void setRadius(double new_radius) { radius = new_radius; }
+    
     private:
         int area;
         int label;
