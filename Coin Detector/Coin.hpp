@@ -25,7 +25,7 @@ class Coin {
 		double getWorth() const { return worth; }
 		double getRadius() const { return radius; }
 
-        void setWorth(int new_worth) { worth = new_worth; }
+        void setWorth(double new_worth) { worth = new_worth; }
 		void setRadius(double new_radius) { radius = new_radius; }
     
     private:

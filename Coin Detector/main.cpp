@@ -31,24 +31,27 @@ int main(int argc, char** argv) {
     //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     
     //read in the 710x710 templates and store them in an array
-    Mat quarter_template = imread("../Images/Templates/Quarter_Face.jpg");
-    Mat penny_template = imread("../Images/Templates/Penny_Face.jpg");
-    Mat dime_template = imread("../Images/Templates/Dime_Face.jpg");
-    Mat nickel_template = imread("../Images/Templates/Nickel_Face.jpg");
+    Mat quarter_template = imread("../../Images/Templates/Quarter_Face.jpg");
+    Mat penny_template = imread("../../Images/Templates/Penny_Face.jpg");
+    Mat dime_template = imread("../../Images/Templates/Dime_Face.jpg");
+    Mat nickel_template = imread("../../Images/Templates/Nickel_Face.jpg");
     
     //vector of templates, in order of least amount to greatest amount
     vector<Mat> orig_templates;
     vector<string> template_names;
-    vector<int> template_radii;
+    vector<double> template_worth;
     orig_templates.push_back(penny_template);
     template_names.push_back("Penny");
+    template_worth.push_back(0.01);
     orig_templates.push_back(nickel_template);
     template_names.push_back("Nickel");
+    template_worth.push_back(0.05);
     orig_templates.push_back(dime_template);
     template_names.push_back("Dime");
+    template_worth.push_back(0.10);
     orig_templates.push_back(quarter_template);
     template_names.push_back("Quarter");
-    
+    template_worth.push_back(0.25);
     
     //the vector of grayscale templates to be used for template matching
     vector<Template> templates;
@@ -56,6 +59,7 @@ int main(int argc, char** argv) {
         Mat temp_gray_image;
         cvtColor(orig_templates[i], temp_gray_image, CV_BGR2GRAY);
         Template temp_template(template_names[i], temp_gray_image);
+        temp_template.setWorth(template_worth[i]);
         templates.push_back(temp_template);
     }
 
@@ -67,11 +71,12 @@ int main(int argc, char** argv) {
 	//assign labels to coins on a binary image
     vector<Coin> coin_vector = setCoinAttributes(orig_image);
     
+    //check
+    
     for (int i = 0; i < coin_vector.size(); i++) {
         cout << "Coin " << i+1 << endl;
         cout << "Area " << coin_vector[i].getArea() << endl;
         cout << "Label " << coin_vector[i].getLabel() << endl;
-        cout << "Radius " << coin_vector[i].getRadius() << endl;
         cout << "x center " << coin_vector[i].getCenterX() << endl;
         cout << "y center " << coin_vector[i].getCenterY() << endl;
         cout << endl;
@@ -90,11 +95,11 @@ int main(int argc, char** argv) {
 	}
     
 	string choice;
-	cout << "Do you want to generate a billion images? (y/n)";
-	cin >> choice;
-	if(choice == "y") {
+	//cout << "Do you want to generate a billion images? (y/n)";
+	//cin >> choice;
+	//if(choice == "y") {
     	templateMatch(orig_image, coin_vector, templates);
-	}
+	//}
 	
 	return 0;
 }
