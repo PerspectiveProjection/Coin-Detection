@@ -61,6 +61,7 @@ vector<Coin> setCoinAttributes(Mat orig_image) {
  * centroids is the matrix computed from the connected components method
  **/
 void setCoins(vector<Coin> *coin_vector, Mat labeled_image, Mat stats, Mat centroids) {
+	cout << stats << endl;
     //navigate through objects, skipping 0 since it's background
     for(int i = 1; i < stats.cols; i++) {
         //grab x, y of center then the label at that point
@@ -157,23 +158,19 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
         //4 numbers at end control, upper threshold for canny, threshold for center,
         //min and max radius to be detected, 0 is default.
         HoughCircles(temp_blur_image, temp_circles, HOUGH_GRADIENT, 1, temp_blur_image.rows/8, 150, 100, 0, 0);
-        //loop through circles vector to obtain the center points and radius
-        for(int k = 0; k < temp_circles.size(); k++) {
-            //get (x, y) coordinates and radius
-            Point center(cvRound(temp_circles[k][0]), cvRound(temp_circles[k][1]));
-            double radius = cvRound(temp_circles[k][2]);
-            //set radius from circles
-            templates[i].setRadius(radius);
-            //check
-            //draw circle centers
-            circle(templates[i].getTemplate(), center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            //draw circle outlines
-            circle(templates[i].getTemplate(), center, radius, Scalar(0, 0, 255), 3, 8, 0);
-            
-        }
-        //clear circles vector to reuse
-        temp_circles.clear();
         
+		//Go through circles vector to obtain the center points and radius
+        //get (x, y) coordinates and radius
+		Point center(cvRound(temp_circles[0][0]), cvRound(temp_circles[0][1]));
+		double radius = cvRound(temp_circles[0][2]);
+		//set radius from circles
+		templates[i].setRadius(radius);
+		
+		//draw circle centers
+		circle(templates[i].getTemplate(), center, 3, Scalar(0, 255, 0), -1, 8, 0);
+		//draw circle outlines
+		circle(templates[i].getTemplate(), center, radius, Scalar(0, 0, 255), 3, 8, 0);
+            
         name = "template_hough" + to_string(i+1);
         imwrite(name + ".jpg", templates[i].getTemplate());
     }
