@@ -31,10 +31,10 @@ int main(int argc, char** argv) {
     //cvtColor(orig_image, orig_image, COLOR_BGR2GRAY);
     
     //read in the 710x710 templates and store them in an array
-    Mat quarter_template = imread("../../Images/Templates/Quarter_Face.jpg");
-    Mat penny_template = imread("../../Images/Templates/Penny_Face.jpg");
-    Mat dime_template = imread("../../Images/Templates/Dime_Face.jpg");
-    Mat nickel_template = imread("../../Images/Templates/Nickel_Face.jpg");
+    Mat quarter_template = imread("../Images/Templates/Quarter_Face.jpg");
+    Mat penny_template = imread("../Images/Templates/Penny_Face.jpg");
+    Mat dime_template = imread("../Images/Templates/Dime_Face.jpg");
+    Mat nickel_template = imread("../Images/Templates/Nickel_Face.jpg");
     
     //vector of templates, in order of least amount to greatest amount
     vector<Mat> orig_templates;
