@@ -343,6 +343,7 @@ void templateMatch(Mat orig_image, vector<Coin> coin_vector, vector<Template> te
     CvScalar color = CV_RGB(255,255,255);
     putText(save_orig, message, textOrg, FONT_HERSHEY_PLAIN, 2, color, 2);
     
+    imwrite("final_output.jpg", save_orig);
     namedWindow("Total", WINDOW_AUTOSIZE);
     imshow("Total", save_orig);
     waitKey(0);

@@ -95,11 +95,8 @@ int main(int argc, char** argv) {
 	}
     
 	string choice;
-	//cout << "Do you want to generate a billion images? (y/n)";
-	//cin >> choice;
-	//if(choice == "y") {
-    	templateMatch(orig_image, coin_vector, templates);
-	//}
+
+    templateMatch(orig_image, coin_vector, templates);
 	
 	return 0;
 }
